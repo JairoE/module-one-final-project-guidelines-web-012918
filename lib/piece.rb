@@ -1,6 +1,5 @@
 class Piece < ActiveRecord::Base
-  has_many :piece_positions
-  belongs_to :user
+  belongs_to :game
 
   def initialize(color)
     @color = color

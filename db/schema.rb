@@ -13,7 +13,9 @@
 ActiveRecord::Schema.define(version: 20180212204752) do
 
   create_table "games", force: :cascade do |t|
-    t.string "winner"
+    t.integer "winner_id"
+    t.integer "user1_id"
+    t.integer "user2_id"
   end
 
   create_table "piece_positions", force: :cascade do |t|
@@ -23,7 +25,7 @@ ActiveRecord::Schema.define(version: 20180212204752) do
 
   create_table "pieces", force: :cascade do |t|
     t.string  "color"
-    t.integer "user_id"
+    t.integer "game_id"
   end
 
   create_table "positions", force: :cascade do |t|
@@ -32,8 +34,7 @@ ActiveRecord::Schema.define(version: 20180212204752) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string  "name"
-    t.integer "game_id"
+    t.string "name"
   end
 
 end

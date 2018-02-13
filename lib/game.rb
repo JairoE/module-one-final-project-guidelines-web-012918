@@ -1,19 +1,17 @@
 class Game < ActiveRecord::Base
-  has_many :users
-  has_many :pieces, through: :users
-  has_many :positions
-  has_many :piece_positions, through: :positions
+  belongs_to :player_one
+  belongs_to :player_two
+  has_many :pieces
 
   def initialize()
-    @board = [[],[],[],[],[],[]]
+    @board = [{},{},{},{},{},{}]
     @winner = nil
     coord = 65 #ascii code for capital A
 
     6.times do |row|
       7.times do |i|
         coordinate = coord.chr + (i+1).to_s #.chr returns character representation of ascii code
-        @board[row] << Position.new(coordinate)
-        @board[row].add_piece_to_position(nil)
+        @board[row][coordinate] = nil  #creating empty board w/ positions that are empty
       end
       coord +=1
     end
