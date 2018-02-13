@@ -1,18 +1,18 @@
 def greet
-  "Welcome to Connect 0100"
+  puts "Welcome to Connect 0100"
 end
 
 def create_users_and_game
-  puts "Enter player 1 name"
+  puts "Enter user 1 name"
   username = gets.chomp
   User.create(name: username)
-  puts "Enter player 2 name"
+  puts "Enter user 2 name"
   username2 = gets.chomp
   User.create(name: username2)
 
   still_adding_users = true
   while still_adding_users
-    puts "Would you like to add more players or start a game? /n
+    puts "Would you like to add more users or start a game? /n
     Enter 'm' for more players or 's' to start a game..."
     input = gets.chomp
     if input == 's'
@@ -24,13 +24,13 @@ def create_users_and_game
       #if helper method is unique (i.e, true), create the username
       User.create(name: username)
     else
-      "Please re-read carefully :)"
+      puts "Please read carefully and try again :)"
     end
   end
 
-  puts "Who will be Player 1?"
+  puts "Which user will be Player 1?"
   username1 = gets.chomp
-  puts "Who will be Player 2?"
+  puts "Which user will be Player 2?"
   username2 = gets.chomp
   start_game(username1, username2)
 end
@@ -46,19 +46,63 @@ def start_game(username1, username2)
 end
 
 def play_game(game)
+  puts "Player 1, please choose a color"
+  player_one_color = gets.chomp
+  #make sure it's a color they can choose
+  puts "Player 2, please choose a color"
+  player_two_color = gets.chomp
+  #make sure it's a color they can choose
+
+  while game.winner_id == nil
+    #player_one_goes, if winning condition met, exit loop, else
+    player_one_goes(game, player_one_color)
+    display_board(game)
+    #player_two_goes, if winning condition met, exit loop, else repeat loop
+    player_two_goes(game, player_two_color)
+    display_board(game)
+    game.look_for_winner_in_column
+
+  end
+
+end
+
+def player_one_goes(game, player_one_color)
+  puts "Player 1, pick a column to drop your piece in /n
+        Please enter a number between 1 and 7"
+  input_column = gets.chomp
+  #make sure input is between 1 and 7
+  #if column is full, ask to enter a different column
+  piece = game.create_piece(player_one_color)
+  game.place_piece_in_column(piece, input_column.to_i)
+
+end
+
+def player_two_goes(game, player_two_color)
+  puts "Player 2, pick a column to drop your piece in /n
+        Please enter a number between 1 and 7"
+  input_column = gets.chomp
+  #make sure input is between 1 and 7
+  piece = game.create_piece(player_two_color)
+  game.place_piece_in_column(piece, input_column.to_i)
+  #if column is full, ask to enter a different column
+  #we determine if a column is full if place_piece_in_column returns nil
 
 end
 
 def create_empty_board
-  board = [{},{},{},{},{},{}]
-  coord = 65 #ascii code for capital A
+  board = [{},{},{},{},{},{},{}]
 
-  6.times do |row|
-    7.times do |i|
-      coordinate = coord.chr + (i+1).to_s #.chr returns character representation of ascii code
-      board[row][coordinate] = nil  #creating empty board w/ positions that are empty
+  7.times do |column|
+    coord = 65 #ascii code for capital A
+    6.times do |i|
+      coordinate = (coord+i).chr + (column+1).to_s #.chr returns character representation of ascii code
+      board[column][coordinate] = nil  #creating empty board w/ positions that are empty
     end
-    coord +=1
+
   end
   board
+end
+
+def display_board(game)
+  puts game.board
 end
