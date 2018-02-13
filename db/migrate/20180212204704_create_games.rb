@@ -4,6 +4,7 @@ class CreateGames < ActiveRecord::Migration[5.0]
       t.integer :winner_id
       t.integer :player_one_id
       t.integer :player_two_id
+      t.text :board
     end
   end
 end

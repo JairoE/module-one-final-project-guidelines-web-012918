@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 20180213164357) do
     t.integer "winner_id"
     t.integer "player_one_id"
     t.integer "player_two_id"
+    t.text    "board"
   end
 
   create_table "pieces", force: :cascade do |t|
