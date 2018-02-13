@@ -1,5 +1,5 @@
-class PlayerTwo
+class PlayerTwo < ActiveRecord::Base
   belongs_to :user
-  has_many :pieces, through: :game
+  has_many :pieces, through: :games
 
 end
