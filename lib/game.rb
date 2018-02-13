@@ -6,12 +6,12 @@ class Game < ActiveRecord::Base
 
   def initialize()
     @board = [[],[],[],[],[],[]]
-    @winner = nil 
+    @winner = nil
     coord = 65 #ascii code for capital A
 
     6.times do |row|
       7.times do |i|
-        coordinate = coord.chr + (i+1).to_s
+        coordinate = coord.chr + (i+1).to_s #.chr returns character representation of ascii code
         @board[row] << Position.new(coordinate)
         @board[row].add_piece_to_position(nil)
       end
