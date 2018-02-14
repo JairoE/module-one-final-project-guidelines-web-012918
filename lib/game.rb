@@ -21,15 +21,16 @@ class Game < ActiveRecord::Base
     end
   end
 
-  def look_for_winner_in_column
+  def look_for_winner_in_columns
     #first find 4consecutive colored pieces in a column
     previous_color = nil
     column = 0
+    four_consecutive_pieces = 0
 
-    while column < 7
-      
+    while column < 7 && four_consecutive_pieces < 4
       four_consecutive_pieces = 0
-      self.board[column].each do |row, current_piece|
+      self.board[column].each do |row_coordinate, current_piece|
+        # binding.pry
         if current_piece != nil && previous_color == nil && four_consecutive_pieces < 4
           previous_color = current_piece.color
           four_consecutive_pieces +=1
