@@ -58,7 +58,7 @@ def play_game(game)
 
   while game.winner_id == nil
     #player_one_goes, if winning condition met, exit loop, else
-    display_board(game)
+    display_board(game) # check for potential winner after this display_board? Losing player is getting extra turn
     player_one_goes(game, player_one_color)
     display_board(game)
     potential_winner = game.look_for_winner_in_columns
@@ -80,7 +80,7 @@ def play_game(game)
     end
     #player_two_goes, if winning condition met, exit loop, else repeat loop
     player_two_goes(game, player_two_color)
-    display_board(game)
+    # display_board(game) # duplicate call
     # potential_winner = game.look_for_winner_in_columns
     # if potential_winner
     #   game.winner_id = potential_winner
