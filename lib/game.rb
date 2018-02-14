@@ -14,7 +14,7 @@ class Game < ActiveRecord::Base
       end
 
     if array_of_empty_rows_in_column.empty?
-      nil
+      nil # returning nil creates infinite loop?
     else
       row = array_of_empty_rows_in_column.first #contains first coordinate that is empty, which should be the coordinate lowest in the column.
       self.board[column_number-1][row[0]] = piece
@@ -38,7 +38,7 @@ class Game < ActiveRecord::Base
           if previous_color == current_piece.color
             four_consecutive_pieces +=1
           else
-            four_consecutive_pieces = 0 #reset incrementer if current piece isn't the same as previous
+            four_consecutive_pieces = 1 #reset incrementer if current piece isn't the same as previous
             previous_color = current_piece.color
           end
         elsif current_piece == nil && four_consecutive_pieces < 4

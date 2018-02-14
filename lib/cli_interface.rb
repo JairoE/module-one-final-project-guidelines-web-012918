@@ -47,9 +47,11 @@ end
 
 def play_game(game)
   puts "Player 1, please choose a color"
+  # puts "#{User.find_by_id(game.player_one_id).name}, please choose a color"
   player_one_color = gets.chomp
   #make sure it's a color they can choose
   puts "Player 2, please choose a color"
+  # puts "#{User.find_by_id(game.player_two_id).name}, please choose a color"
   player_two_color = gets.chomp
   #make sure it's a color they can choose, and hasn't been chosen by player1
   playeroneid = game.player_one_id
@@ -57,43 +59,27 @@ def play_game(game)
   players_with_chosen_colors = {("p1"+playeroneid.to_s) => player_one_color, ("p2"+playertwoid.to_s) => player_two_color}
 
   while game.winner_id == nil
-    #player_one_goes, if winning condition met, exit loop, else
-    display_board(game) # check for potential winner after this display_board? Losing player is getting extra turn, so when losing player then gets connect 4, loser becomes winner(?)
-    player_one_goes(game, player_one_color)
     display_board(game)
-    potential_winner = game.look_for_winner_in_columns
-
-    if potential_winner
-      playerid = players_with_chosen_colors.select do |key, value|
-          value == potential_winner
-        end #returns hash of p1 or p2 with their associated id in string format as key, value is color
-      playerid = playerid.first[0] #first retrieves the first keyvalue pair in hash as an array
-      playerobject = playerid[0..1]
-      playerid = playerid[2..-1].to_i #gets the player's id
-
-      if playerobject == "p1"
-        game.winner_id = PlayerOne.find_by_id(playerid).user_id #set winner_id = USER_id (not player_id)
-      else
-        game.winner_id = PlayerTwo.find_by_id(playerid).user_id #set winner_id = USER_id (not player_id)
-      end
-
+    potential_winner?(game, players_with_chosen_colors)
+    if game.winner_id == nil
+      player_one_goes(game, player_one_color) # After player_one turn, if win condition not met, player_two goes, repeat loop. Else win condition met, exit loop.
     end
-    #player_two_goes, if winning condition met, exit loop, else repeat loop
-    player_two_goes(game, player_two_color)
-    # display_board(game) # duplicate call
-    # potential_winner = game.look_for_winner_in_columns
-    # if potential_winner
-    #   game.winner_id = potential_winner
-    # end
+
+    display_board(game)
+    potential_winner?(game, players_with_chosen_colors)
+    if game.winner_id == nil
+      player_two_goes(game, player_two_color) # After player_two turn, if win condition not met, repeat loop, player_one goes. Else win condition met, exit loop.
+    end
+
   end
 
   game.winner_id
 end
 
 def player_one_goes(game, player_one_color)
-  binding.pry
   puts "Player 1, pick a column to drop your piece in /n
         Please enter a number between 1 and 7"
+        # binding.pry
   input_column = gets.chomp
   #make sure input is between 1 and 7
   while input_column.to_i < 1 || input_column.to_i > 7
@@ -107,6 +93,7 @@ def player_one_goes(game, player_one_color)
   #we determine if a column is full if place_piece_in_column returns nil
   while column == nil
     puts "Please enter a different column number. The current column is full"
+    input_column = gets.chomp
     column = game.place_piece_in_column(piece, input_column.to_i)
   end
 
@@ -124,6 +111,27 @@ def player_two_goes(game, player_two_color)
   while column == nil
     puts "Please enter a different column number. The current column is full"
     column = game.place_piece_in_column(piece, input_column.to_i)
+  end
+
+end
+
+def potential_winner?(game, players_with_chosen_colors)
+
+  potential_winner = game.look_for_winner_in_columns
+  if potential_winner
+    playerid = players_with_chosen_colors.select do |key, value|
+        value == potential_winner
+      end #returns hash of p1 or p2 with their associated id in string format as key, value is color
+    playerid = playerid.first[0] #first retrieves the first keyvalue pair in hash as an array
+    playerobject = playerid[0..1]
+    playerid = playerid[2..-1].to_i #gets the player's id
+
+    if playerobject == "p1"
+      game.winner_id = PlayerOne.find_by_id(playerid).user_id #set winner_id = USER_id (not player_id)
+    else
+      game.winner_id = PlayerTwo.find_by_id(playerid).user_id #set winner_id = USER_id (not player_id)
+    end
+
   end
 
 end
