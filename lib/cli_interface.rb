@@ -47,29 +47,29 @@ def start_game(username1, username2)
 end
 
 def play_game(game)
-  puts "#{User.find_by_id(player_one_user_id).name}, please choose a color"
+  playeroneid = game.player_one_id
+  playertwoid = game.player_two_id
+  puts "#{User.find_by_id(PlayerOne.find_by_id(playeroneid)).name}, please choose a color"
   # puts "#{User.find_by_id(game.player_one_id).name}, please choose a color"
   player_one_color = gets.chomp
   #make sure it's a color they can choose
-  puts "#{User.find_by_id(player_two_user_id).name}, please choose a color"
+  puts "#{User.find_by_id(PlayerTwo.find_by_id(playertwoid)).name}, please choose a color"
   # puts "#{User.find_by_id(game.player_two_id).name}, please choose a color"
   player_two_color = gets.chomp
   #make sure it's a color they can choose, and hasn't been chosen by player1
-  playeroneid = game.player_one_id
-  playertwoid = game.player_two_id
   players_with_chosen_colors = {("p1"+playeroneid.to_s) => player_one_color, ("p2"+playertwoid.to_s) => player_two_color}
 
   while game.winner_id == nil
     display_board(game)
     potential_winner?(game, players_with_chosen_colors)
     if game.winner_id == nil
-      player_one_goes(game, player_one_color) # After player_one turn, if win condition not met, player_two goes, repeat loop. Else win condition met, exit loop.
+      player_one_goes(game, player_one_color, playeroneid) # After player_one turn, if win condition not met, player_two goes, repeat loop. Else win condition met, exit loop.
     end
 
     display_board(game)
     potential_winner?(game, players_with_chosen_colors)
     if game.winner_id == nil
-      player_two_goes(game, player_two_color) # After player_two turn, if win condition not met, repeat loop, player_one goes. Else win condition met, exit loop.
+      player_two_goes(game, player_two_color, playertwoid) # After player_two turn, if win condition not met, repeat loop, player_one goes. Else win condition met, exit loop.
     end
 
   end
@@ -77,8 +77,8 @@ def play_game(game)
   game.winner_id
 end
 
-def player_one_goes(game, player_one_color)
-  puts "#{User.find_by_id(player_one_user_id).name}, pick a column to drop your piece in:"
+def player_one_goes(game, player_one_color, playeroneid)
+  puts "#{User.find_by_id(playeroneid).name}, pick a column to drop your piece in:"
   puts "(Enter a number between 1 and 7)"
   input_column = gets.chomp
   #make sure input is between 1 and 7
@@ -99,8 +99,8 @@ def player_one_goes(game, player_one_color)
 
 end
 
-def player_two_goes(game, player_two_color)
-  puts "#{User.find_by_id(player_two_user_id).name}, pick a column to drop your piece in:"
+def player_two_goes(game, player_two_color, playertwoid)
+  puts "#{User.find_by_id(playertwoid).name}, pick a column to drop your piece in:"
   puts "(Enter a number between 1 and 7)"
   input_column = gets.chomp
   #make sure input is between 1 and 7
