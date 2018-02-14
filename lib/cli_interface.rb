@@ -110,6 +110,7 @@ def player_two_goes(game, player_two_color)
   #we determine if a column is full if place_piece_in_column returns nil
   while column == nil
     puts "Please enter a different column number. The current column is full"
+    input_column = gets.chomp
     column = game.place_piece_in_column(piece, input_column.to_i)
   end
 
@@ -137,52 +138,37 @@ def potential_winner?(game, players_with_chosen_colors)
 end
 
 def create_empty_board
-  board = [{},{},{},{},{},{},{}]
+  board = [[],[],[],[],[],[]]
+  coord = 65 #ascii code for capital A
 
-  7.times do |column|
-    coord = 65 #ascii code for capital A
-    6.times do |i|
-      coordinate = (coord+i).chr + (column+1).to_s #.chr returns character representation of ascii code
-      board[column][coordinate] = nil  #creating empty board w/ positions that are empty
+  6.times do |row|
+    7.times do |i|
+      coordinate = (coord).chr + (i+1).to_s #.chr returns character representation of ascii code
+      board[row][i] = coordinate  #creating empty board w/ positions that are empty
     end
-
+    coord +=1
   end
   board
 end
 
-# def look_for_winner_in_game(game, players_and_colors)
-#   winners_color = game.look_for_winner_in_column
-#   if winner
-#     players_and_colors.each do |player_nd_color|
-#       if player_nd_color.values[0] == winner
-#
-#     end
-#   else
-#     nil
-#   end
-# end
-
 def display_board(game)
+
   rows = []
-  game.board.each do |column|
-    row = []
-    column.each do |coordinate, piece|
-      if piece == nil
-        row << coordinate
+
+  game.board.each do |row|
+    display_row = []
+
+    row.each do |piece|
+      if piece.class == String
+        display_row << "   ".colorize(:white).colorize(:background => :white)
       else
-        row << piece.color
-      end 
+        piece.color
+        display_row << "   ".colorize(piece.color.to_sym).colorize(:background => piece.color.to_sym)
+      end
 
     end
-    rows << row
+    rows << display_row
   end
-
-  # rows << ["a1","a2","a3","a4","a5","a6","a7"]
-  # rows << ["b1","b2","b3","b4","b5","b6","b7"]
-  # rows << ["c1","c2","c3","c4","c5","c6","c7"]
-  # rows << ["d1","d2","d3","d4","d5","d6","d7"]
-  # rows << ["e1","e2","e3","e4","e5","e6","e7"]
-  # rows << ["f1","f2","f3","f4","f5","f6","f7"]
 
   table = Terminal::Table.new do |t|
     t << rows.last

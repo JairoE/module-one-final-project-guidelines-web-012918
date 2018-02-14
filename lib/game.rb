@@ -9,16 +9,22 @@ class Game < ActiveRecord::Base
   end
 
   def place_piece_in_column(piece, column_number)
-    array_of_empty_rows_in_column = self.board[(column_number - 1)].select do |coordinate, value|
-        value == nil
-      end
+    array_of_empty_rows_in_column = nil
 
-    if array_of_empty_rows_in_column.empty?
-      nil # returning nil creates infinite loop?
-    else
-      row = array_of_empty_rows_in_column.first #contains first coordinate that is empty, which should be the coordinate lowest in the column.
-      self.board[column_number-1][row[0]] = piece
+    row_number = nil
+
+    self.board.each_with_index do |row, index|
+      if row[column_number - 1].class == String && row_number == nil
+        row_number = index
+      end
     end
+
+    if row_number
+      self.board[row_number][column_number-1] = piece
+    else
+      nil # returning nil creates infinite loop?
+    end
+
   end
 
   def look_for_winner_in_columns
@@ -29,22 +35,23 @@ class Game < ActiveRecord::Base
 
     while column < 7 && four_consecutive_pieces < 4
       four_consecutive_pieces = 0
-      self.board[column].each do |row_coordinate, current_piece|
-        # binding.pry
-        if current_piece != nil && previous_color == nil && four_consecutive_pieces < 4
+      self.board.each_with_index do |row, index|
+        current_piece = board[index][column]
+        if current_piece.class != String && previous_color == nil && four_consecutive_pieces < 4
           previous_color = current_piece.color
           four_consecutive_pieces +=1
-        elsif current_piece != nil && previous_color != nil && four_consecutive_pieces < 4
+        elsif current_piece.class != String && previous_color != nil && four_consecutive_pieces < 4
           if previous_color == current_piece.color
             four_consecutive_pieces +=1
           else
-            four_consecutive_pieces = 1 #reset incrementer if current piece isn't the same as previous
             previous_color = current_piece.color
+            four_consecutive_pieces = 1 #reset incrementer if current piece isn't the same as previous
           end
-        elsif current_piece == nil && four_consecutive_pieces < 4
+        elsif current_piece.class == String && four_consecutive_pieces < 4
           previous_color = nil #if code reaches this line, then current_piece is nil
           four_consecutive_pieces = 0
         end
+        # binding.pry
       end
       column +=1
     end

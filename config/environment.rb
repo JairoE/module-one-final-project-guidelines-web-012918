@@ -8,3 +8,4 @@ ActiveRecord::Base.logger = nil
 require_all 'lib'
 require 'terminal-table'
 require 'pry'
+require 'colorize'
