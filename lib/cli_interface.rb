@@ -131,8 +131,19 @@ end
 
 def potential_winner?(game, players_with_chosen_colors)
 
-  potential_winner = game.look_for_winner_in_columns
-  if potential_winner
+  potential_winner_in_columns = game.look_for_winner_in_columns
+  if potential_winner_in_columns
+    potential_winner_helper(game, potential_winner_in_columns, players_with_chosen_colors)
+  else
+    potential_winner_in_rows = game.look_for_winner_in_rows
+    if potential_winner_in_rows
+      potential_winner_helper(game, potential_winner_in_rows, players_with_chosen_colors)
+    end
+  end
+
+end
+
+def potential_winner_helper(game, potential_winner, players_with_chosen_colors)
     playerid = players_with_chosen_colors.select do |key, value|
         value == potential_winner
       end #returns hash of p1 or p2 with their associated id in string format as key, value is color
@@ -145,8 +156,6 @@ def potential_winner?(game, players_with_chosen_colors)
     else
       game.winner_id = PlayerTwo.find_by_id(playerid).user_id #set winner_id = USER_id (not player_id)
     end
-
-  end
 
 end
 

@@ -63,4 +63,35 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def look_for_winner_in_rows
+    previous_color = nil
+    four_consecutive_pieces = 0
+
+    self.board.each do |row|
+      row.each do |current_piece|
+        if current_piece.class != String && previous_color == nil && four_consecutive_pieces < 4
+          previous_color = current_piece.color
+          four_consecutive_pieces +=1
+        elsif current_piece.class != String && previous_color != nil && four_consecutive_pieces < 4
+          if previous_color == current_piece.color
+            four_consecutive_pieces +=1
+          else
+            previous_color = current_piece.color
+            four_consecutive_pieces = 1 #reset incrementer if current_piece isn't the same as previous
+          end
+        elsif current_piece.class == String && four_consecutive_pieces < 4
+          previous_color = nil #if code reaches this line, then current_piece is nil
+          four_consecutive_pieces = 0
+        end
+      end
+    end
+
+    if four_consecutive_pieces == 4
+      previous_color
+    else
+      nil
+    end
+  end
+
+
 end
