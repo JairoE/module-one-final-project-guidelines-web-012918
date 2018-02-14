@@ -3,12 +3,15 @@ def greet
 end
 
 def create_users_and_game
-  puts "Enter user 1 name" # "Enter a user name"
+  puts "Enter username to create your user profile" # "Enter a user name"
   username = gets.chomp
-  User.create(name: username)
-  puts "Enter user 2 name" # "Enter another user name" (repeat this after first name entered - we can have mor than 2)
+  check_and_create_if_username_is_unique(username)
+
+
+  puts "Enter username to create your user profile" # "Enter another user name" (repeat this after first name entered - we can have mor than 2)
   username2 = gets.chomp
-  User.create(name: username2)
+  check_and_create_if_username_is_unique(username2)
+
 
   still_adding_users = true
   while still_adding_users
@@ -21,9 +24,7 @@ def create_users_and_game
     elsif input == 'm'
       puts "Enter another unique username"
       username = gets.chomp
-      #check that input is unique through helpermethod
-      #if helper method is unique (i.e, true), create the username
-      User.create(name: username)
+      check_and_create_if_username_is_unique(username)
     else
       puts "Please read carefully and try again :)"
     end
@@ -34,6 +35,41 @@ def create_users_and_game
   puts "Which user will be Player 2?"
   username2 = gets.chomp
   start_game(username1, username2)
+end
+
+# def ask_for_more_users_and_create_game
+#   puts "Would you like to create more user profiles?"
+#   puts "Enter [yes] or [no]"
+#   input = gets.chomp
+#   if input == "no"
+#     puts "Which username will be Player 1?"
+#     username1 = gets.chomp
+#     puts "Which username will be Player 2?"
+#     username2 = gets.chomp
+#     start_game(username1, username2)
+#   else
+#     still_adding_users = true
+#     while still_adding_users
+#       if input == 's'
+#         still_adding_users = false
+#       elsif input == 'm'
+#         puts "Enter another unique username"
+#         username = gets.chomp
+#         check_and_create_if_username_is_unique(username)
+#       else
+#         puts "Please read carefully and try again :)"
+#       end
+#     end
+#   end
+#
+# end
+
+def check_and_create_if_username_is_unique(username)
+  while User.find_by_name(username)
+    puts "Username is taken. Please enter a unique username"
+    username = gets.chomp
+  end
+  User.create(name: username)
 end
 
 def start_game(username1, username2)
