@@ -3,17 +3,18 @@ def greet
 end
 
 def create_users_and_game
-  puts "Enter user 1 name"
+  puts "Enter user 1 name" # "Enter a user name"
   username = gets.chomp
   User.create(name: username)
-  puts "Enter user 2 name"
+  puts "Enter user 2 name" # "Enter another user name" (repeat this after first name entered - we can have mor than 2)
   username2 = gets.chomp
   User.create(name: username2)
 
   still_adding_users = true
   while still_adding_users
-    puts "Would you like to add more users or start a game? /n
-    Enter 'm' for more players or 's' to start a game..."
+    puts "Would you like to add more users or start a game?"
+    puts "[M] More Players     [S] Start Game"
+    # puts "Enter m for more players or s to start a game..."
     input = gets.chomp
     if input == 's'
       still_adding_users = false
@@ -46,11 +47,11 @@ def start_game(username1, username2)
 end
 
 def play_game(game)
-  puts "Player 1, please choose a color"
+  puts "#{User.find_by_id(player_one_user_id).name}, please choose a color"
   # puts "#{User.find_by_id(game.player_one_id).name}, please choose a color"
   player_one_color = gets.chomp
   #make sure it's a color they can choose
-  puts "Player 2, please choose a color"
+  puts "#{User.find_by_id(player_two_user_id).name}, please choose a color"
   # puts "#{User.find_by_id(game.player_two_id).name}, please choose a color"
   player_two_color = gets.chomp
   #make sure it's a color they can choose, and hasn't been chosen by player1
@@ -77,13 +78,12 @@ def play_game(game)
 end
 
 def player_one_goes(game, player_one_color)
-  puts "Player 1, pick a column to drop your piece in /n
-        Please enter a number between 1 and 7"
-        # binding.pry
+  puts "#{User.find_by_id(player_one_user_id).name}, pick a column to drop your piece in:"
+  puts "(Enter a number between 1 and 7)"
   input_column = gets.chomp
   #make sure input is between 1 and 7
   while input_column.to_i < 1 || input_column.to_i > 7
-    puts "Please enter a number between 1 and 7"
+    puts "(Enter a number between 1 and 7)"
     input_column = gets.chomp
   end
   #if column is full, ask to enter a different column
@@ -92,7 +92,7 @@ def player_one_goes(game, player_one_color)
   #if column is full, ask to enter a different column
   #we determine if a column is full if place_piece_in_column returns nil
   while column == nil
-    puts "Please enter a different column number. The current column is full"
+    puts "Please enter a different column number. The current column is full!"
     input_column = gets.chomp
     column = game.place_piece_in_column(piece, input_column.to_i)
   end
@@ -100,8 +100,8 @@ def player_one_goes(game, player_one_color)
 end
 
 def player_two_goes(game, player_two_color)
-  puts "Player 2, pick a column to drop your piece in /n
-        Please enter a number between 1 and 7"
+  puts "#{User.find_by_id(player_two_user_id).name}, pick a column to drop your piece in:"
+  puts "(Enter a number between 1 and 7)"
   input_column = gets.chomp
   #make sure input is between 1 and 7
   piece = game.create_piece(player_two_color)
@@ -109,7 +109,7 @@ def player_two_goes(game, player_two_color)
   #if column is full, ask to enter a different column
   #we determine if a column is full if place_piece_in_column returns nil
   while column == nil
-    puts "Please enter a different column number. The current column is full"
+    puts "Please enter a different column number. The current column is full!"
     column = game.place_piece_in_column(piece, input_column.to_i)
   end
 
@@ -171,7 +171,7 @@ def display_board(game)
         row << coordinate
       else
         row << piece.color
-      end 
+      end
 
     end
     rows << row
