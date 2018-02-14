@@ -13,9 +13,9 @@ def create_users_and_game
   still_adding_users = true
   while still_adding_users
     puts "Would you like to add more users or start a game?"
-    puts "[m] More Players     [s] Start Game"
+    puts "[M] More Players     [S] Start Game"
     # puts "Enter m for more players or s to start a game..."
-    input = gets.chomp
+    input = gets.chomp.downcase
     if input == 's'
       still_adding_users = false
     elsif input == 'm'
@@ -49,16 +49,27 @@ end
 def play_game(game)
   playeroneid = game.player_one_id
   playertwoid = game.player_two_id
-  puts "#{User.find_by_id(PlayerOne.find_by_id(playeroneid).user_id).name.strip}, please choose a color"
+  color_list = "#{'[Red]'.colorize(:red)}  #{'[Blue]'.colorize(:blue)} #{'[Green]'.colorize(:green)}  #{'[Yellow]'.colorize(:yellow)}  #{'[Magenta]'.colorize(:magenta)}  #{'[Cyan]'.colorize(:cyan)}"
+  color_array = ["red", "blue", "green", "yellow", "magenta", "cyan"]
 
+  puts "#{User.find_by_id(PlayerOne.find_by_id(playeroneid).user_id).name.strip}, please choose a color:"
+  puts color_list
 
-  player_one_color = gets.chomp
-  #make sure it's a color they can choose
-  # binding.pry
-  puts "#{User.find_by_id(PlayerTwo.find_by_id(playertwoid).user_id).name.strip}, please choose a color"
+  player_one_color = gets.chomp.downcase
+  # if !color_array.include?(player_one_color)
+  #   puts "Please choose from these colors:"
+  #   puts color_list
+  # end
 
-  player_two_color = gets.chomp
-  #make sure it's a color they can choose, and hasn't been chosen by player1
+  puts "#{User.find_by_id(PlayerTwo.find_by_id(playertwoid).user_id).name.strip}, please choose a color:"
+  puts color_list
+
+  player_two_color = gets.chomp.downcase
+  # if !color_array.include?(player_one_color)
+  #   puts "Please choose from these colors:"
+  #   puts color_list
+  # end
+
   players_with_chosen_colors = {("p1"+playeroneid.to_s) => player_one_color, ("p2"+playertwoid.to_s) => player_two_color}
 
   while game.winner_id == nil
