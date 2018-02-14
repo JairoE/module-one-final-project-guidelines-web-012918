@@ -58,7 +58,7 @@ def play_game(game)
 
   while game.winner_id == nil
     #player_one_goes, if winning condition met, exit loop, else
-    display_board(game) # check for potential winner after this display_board? Losing player is getting extra turn
+    display_board(game) # check for potential winner after this display_board? Losing player is getting extra turn, so when losing player then gets connect 4, loser becomes winner(?)
     player_one_goes(game, player_one_color)
     display_board(game)
     potential_winner = game.look_for_winner_in_columns
@@ -85,14 +85,13 @@ def play_game(game)
     # if potential_winner
     #   game.winner_id = potential_winner
     # end
-
-
   end
 
   game.winner_id
 end
 
 def player_one_goes(game, player_one_color)
+  binding.pry
   puts "Player 1, pick a column to drop your piece in /n
         Please enter a number between 1 and 7"
   input_column = gets.chomp
