@@ -163,5 +163,36 @@ end
 # end
 
 def display_board(game)
-  puts game.board
+  rows = []
+  game.board.each do |column|
+    row = []
+    column.each do |coordinate, piece|
+      if piece == nil
+        row << coordinate
+      else
+        row << piece.color
+      end 
+
+    end
+    rows << row
+  end
+
+  # rows << ["a1","a2","a3","a4","a5","a6","a7"]
+  # rows << ["b1","b2","b3","b4","b5","b6","b7"]
+  # rows << ["c1","c2","c3","c4","c5","c6","c7"]
+  # rows << ["d1","d2","d3","d4","d5","d6","d7"]
+  # rows << ["e1","e2","e3","e4","e5","e6","e7"]
+  # rows << ["f1","f2","f3","f4","f5","f6","f7"]
+
+  table = Terminal::Table.new do |t|
+    t << rows.last
+    t << :separator
+    counter = 4
+    while counter >= 0
+      t.add_row rows[counter]
+      t.add_separator
+      counter -=1
+    end
+  end
+  puts table
 end
