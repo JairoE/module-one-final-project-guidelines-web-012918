@@ -8,4 +8,5 @@ while still_playing
   winner_name = User.find_by_id(winner_id).name
   puts "#{winner_name} is the winner"
   puts "Would you like to play another game?"
+  input = gets.chomp 
 end

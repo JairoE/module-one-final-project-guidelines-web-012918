@@ -13,7 +13,7 @@ def create_users_and_game
   still_adding_users = true
   while still_adding_users
     puts "Would you like to add more users or start a game?"
-    puts "[M] More Players     [S] Start Game"
+    puts "[m] More Players     [s] Start Game"
     # puts "Enter m for more players or s to start a game..."
     input = gets.chomp
     if input == 's'
@@ -49,12 +49,14 @@ end
 def play_game(game)
   playeroneid = game.player_one_id
   playertwoid = game.player_two_id
-  puts "#{User.find_by_id(PlayerOne.find_by_id(playeroneid)).name}, please choose a color"
-  # puts "#{User.find_by_id(game.player_one_id).name}, please choose a color"
+  puts "#{User.find_by_id(PlayerOne.find_by_id(playeroneid).user_id).name.strip}, please choose a color"
+
+
   player_one_color = gets.chomp
   #make sure it's a color they can choose
-  puts "#{User.find_by_id(PlayerTwo.find_by_id(playertwoid)).name}, please choose a color"
-  # puts "#{User.find_by_id(game.player_two_id).name}, please choose a color"
+  # binding.pry
+  puts "#{User.find_by_id(PlayerTwo.find_by_id(playertwoid).user_id).name.strip}, please choose a color"
+
   player_two_color = gets.chomp
   #make sure it's a color they can choose, and hasn't been chosen by player1
   players_with_chosen_colors = {("p1"+playeroneid.to_s) => player_one_color, ("p2"+playertwoid.to_s) => player_two_color}
@@ -78,7 +80,7 @@ def play_game(game)
 end
 
 def player_one_goes(game, player_one_color, playeroneid)
-  puts "#{User.find_by_id(playeroneid).name}, pick a column to drop your piece in:"
+  puts "#{User.find_by_id(PlayerOne.find_by_id(playeroneid).user_id).name.strip}, pick a column to drop your piece in:"
   puts "(Enter a number between 1 and 7)"
   input_column = gets.chomp
   #make sure input is between 1 and 7
@@ -100,7 +102,7 @@ def player_one_goes(game, player_one_color, playeroneid)
 end
 
 def player_two_goes(game, player_two_color, playertwoid)
-  puts "#{User.find_by_id(playertwoid).name}, pick a column to drop your piece in:"
+  puts "#{User.find_by_id(PlayerTwo.find_by_id(playertwoid).user_id).name.strip}, pick a column to drop your piece in:"
   puts "(Enter a number between 1 and 7)"
   input_column = gets.chomp
   #make sure input is between 1 and 7
