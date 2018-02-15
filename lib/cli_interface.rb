@@ -108,26 +108,33 @@ end
 def play_game(game)
   playeroneid = game.player_one_id
   playertwoid = game.player_two_id
-  color_list = "#{'[Red]'.colorize(:red)}  #{'[Blue]'.colorize(:blue)} #{'[Green]'.colorize(:green)}  #{'[Yellow]'.colorize(:yellow)}  #{'[Magenta]'.colorize(:magenta)}  #{'[Cyan]'.colorize(:cyan)}"
+  color_list = "#{'[Red]'.colorize(:red)}  #{'[Blue]'.colorize(:blue)}  #{'[Green]'.colorize(:green)}  #{'[Yellow]'.colorize(:yellow)}  #{'[Magenta]'.colorize(:magenta)}  #{'[Cyan]'.colorize(:cyan)}"
   color_array = ["red", "blue", "green", "yellow", "magenta", "cyan"]
 
   puts "#{User.find_by_id(PlayerOne.find_by_id(playeroneid).user_id).name.strip}, please choose a color:"
   puts color_list
 
   player_one_color = gets.chomp.downcase
-  # if !color_array.include?(player_one_color)
-  #   puts "Please choose from these colors:"
-  #   puts color_list
-  # end
+  until color_array.include?(player_one_color)
+    puts "Please read the list carefully"
+    puts color_list
+    player_one_color = gets.chomp.downcase
+  end
+  remaining_colors_list = color_list.split("  ").reject{|color| color.include?("[" + player_one_color.capitalize + "]")}
+  remaining_colors_list = remaining_colors_list.join("  ")
 
+  # binding.pry
+  remaining_colors_array = color_array.reject{|color| color == player_one_color}
   puts "#{User.find_by_id(PlayerTwo.find_by_id(playertwoid).user_id).name.strip}, please choose a color:"
-  puts color_list
+
+  puts remaining_colors_list
 
   player_two_color = gets.chomp.downcase
-  # if !color_array.include?(player_one_color)
-  #   puts "Please choose from these colors:"
-  #   puts color_list
-  # end
+  until remaining_colors_array.include?(player_two_color)
+    puts "Please read the list carefully"
+    puts remaining_colors_list
+    player_two_color = gets.chomp.downcase
+  end
 
   players_with_chosen_colors = {("p1"+playeroneid.to_s) => player_one_color, ("p2"+playertwoid.to_s) => player_two_color}
 
@@ -260,6 +267,47 @@ def display_board(game)
       t.add_separator
       counter -=1
     end
+
   end
+  puts " "
   puts table
+end
+
+def enter_the_database
+  puts "Would you like to access a user_profile?"
+  puts "Enter [Yes] or [No]"
+  input = gets.chomp.downcase
+  input = check_yes_no_input(input)
+  if input == "no"
+    nil
+  else
+    user_database_questions
+  end
+end
+
+def user_database_questions
+  puts "Whose user profile would you like to see more information about?"
+  puts "Enter username"
+
+  input = gets.chomp
+  userid = User.find_by_name(input).id
+  playerone_ids = PlayerOne.find_each do |p1|
+      p1.user_id == userid
+    end
+
+  playertwo_ids = PlayerTwo.find_each do |p2|
+    p2.user_id == userid
+  end
+
+  binding.pry
+
+end
+
+def check_yes_no_input(input)
+  while input != "no" && input != "yes"
+    puts "... funny. try again"
+    puts "Enter [Yes] or [No]"
+    input = gets.chomp.downcase
+  end
+  input
 end
