@@ -21,6 +21,7 @@ class Game < ActiveRecord::Base
 
     if row_number
       self.board[row_number][column_number-1] = piece
+      pid = fork{ exec 'afplay', "piece_drop.mp3" }
     else
       nil # returning nil creates infinite loop?
     end
