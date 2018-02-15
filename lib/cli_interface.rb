@@ -152,7 +152,7 @@ def play_game(game)
     end
 
   end
-
+  Game.update(game.id, winner_id: game.winner_id, board: game.board)
   game.winner_id
 end
 
@@ -242,7 +242,7 @@ end
 def display_board(game)
 
   rows = []
-
+  rows << [1,2,3,4,5,6,7]
   game.board.each do |row|
     display_row = []
 
@@ -261,13 +261,15 @@ def display_board(game)
   table = Terminal::Table.new do |t|
     t << rows.last
     t << :separator
-    counter = 4
+    counter = 5
     while counter >= 0
       t.add_row rows[counter]
-      t.add_separator
+      if counter != 0
+        t.add_separator
+      end
       counter -=1
     end
-
+    t.style = {:border_bottom => false }
   end
   puts " "
   puts table
@@ -291,16 +293,30 @@ def user_database_questions
 
   input = gets.chomp
   userid = User.find_by_name(input).id
-  playerone_ids = PlayerOne.find_each do |p1|
-      p1.user_id == userid
-    end
+  playerone_ids = PlayerOne.where("user_id = #{userid}")
+  playerone_ids = playerone_ids.map{|p1| p1.id}
+  playertwo_ids = PlayerTwo.where("user_id = #{userid}")
+  playertwo_ids = playertwo_ids.map{|p2| p2.id}
 
-  playertwo_ids = PlayerTwo.find_each do |p2|
-    p2.user_id == userid
+  games_won_as_p1 = []
+  playerone_ids.each do |id|
+    game = Game.where("player_one_id = #{id}")[0].winner_id
+    if game == userid
+      games_won_as_p1 << game
+    end
   end
 
-  binding.pry
+  games_won_as_p2 = []
+  playertwo_ids.each do |id|
+    game = Game.where("player_two_id = #{id}")[0].winner_id
+    if game == userid
+      games_won_as_p1 << game
+    end
+  end
 
+
+  num_of_games_won = (games_won_as_p1 + games_won_as_p2).size
+  puts "#{input} has won #{num_of_games_won} games"
 end
 
 def check_yes_no_input(input)
